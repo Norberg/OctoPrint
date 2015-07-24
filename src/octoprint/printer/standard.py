@@ -751,7 +751,18 @@ class Printer(PrinterInterface, comm.MachineComPrintCallback):
 		self._addLog(message)
 
 	def on_comm_temperature_update(self, temp, bedTemp):
+		bedTemp = self.get_fake_bed_temp()
 		self._addTemperatureData(temp, bedTemp)
+
+	def get_fake_bed_temp(self):
+		line = None
+		try:
+			f = open("/tmp/room_temp")
+			line = f.readline()
+			return (float(line), 0.0)
+		except Exception as e:
+			return (1.0, 1.0)
+
 
 	def on_comm_state_change(self, state):
 		"""
